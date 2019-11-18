@@ -1,0 +1,8 @@
+{
+  "name": "rize-router",
+  "version": "0.0.1",
+  "description": "A routing library for React SPA with simple auth.",
+  "main": "src/index.js",
+  "repository": "git@github.com:yusuke-suzuki/rize-router.git",
+  "license": "MIT"
+}
