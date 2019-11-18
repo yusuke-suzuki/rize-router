@@ -2,7 +2,45 @@
   "name": "rize-router",
   "version": "0.0.1",
   "description": "A routing library for React SPA with simple auth.",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "repository": "git@github.com:yusuke-suzuki/rize-router.git",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "yarn run build",
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "core-js": "^3.4.1",
+    "history": "^4.10.1",
+    "jest": "^24.9.0",
+    "path-to-regexp": "^5.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "rollup": "^1.27.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "router",
+    "route",
+    "routing",
+    "history",
+    "hooks",
+    "auth"
+  ]
 }
