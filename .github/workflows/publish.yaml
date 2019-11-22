@@ -23,7 +23,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@yusuke-suzuki'
       - run: yarn
-      - run: yarn publish
+      - run: yarn publish --access=public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
           NODE_ENV: production
