@@ -42,8 +42,5 @@
     "history",
     "hooks",
     "auth"
-  ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  ]
 }
