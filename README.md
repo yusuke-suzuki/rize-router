@@ -23,7 +23,7 @@ import { StoreContext } from 'redux-react-hook';
 import configureStore from './configureStore';
 
 import { createBrowserHistory } from 'history';
-import { RouterContext } from 'rize-router';
+import { RouterContext } from '@yusuke-suzuki/rize-router';
 
 import App from './App';
 
@@ -45,7 +45,7 @@ ReactDOM.render(
 import React, { useCallback } from 'react';
 import { useMappedState } from 'redux-react-hook';
 
-import { Router } from 'rize-router';
+import { Router } from '@yusuke-suzuki/rize-router';
 import routes from './routes';
 
 import Login from './pages/Login';
@@ -119,7 +119,7 @@ Before you can use the router, you must provide the [history](https://github.com
 
 ```jsx
 import { createBrowserHistory } from 'history';
-import { RouterContext } from 'rize-router';
+import { RouterContext } from '@yusuke-suzuki/rize-router';
 
 const history = createBrowserHistory();
 
@@ -167,7 +167,7 @@ Provides declarative, accessible navigation around your application.
 
 ```jsx
 import React from 'react';
-import { Link } from 'rize-router';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 const Books = () => {
   return <Link to="/books/100">MyBook 100</Link>;
@@ -178,7 +178,7 @@ const Books = () => {
 
 ```jsx
 import React from 'react';
-import { Link } from 'rize-router';
+import { Link } from '@yusuke-suzuki/rize-router';
 import Button from '@material-ui/core/Button';
 
 const Books = () => {
@@ -196,7 +196,7 @@ Simply returns the [history](https://github.com/ReactTraining/history) object.
 
 ```jsx
 import React, { useCallback } from 'react';
-import { useHistory } from 'rize-router';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 const Books = () => {
   const history = useHistory();
