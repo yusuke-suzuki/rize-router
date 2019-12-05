@@ -1,6 +1,6 @@
 {
   "name": "@yusuke-suzuki/rize-router",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A routing library for React SPA with simple auth.",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
