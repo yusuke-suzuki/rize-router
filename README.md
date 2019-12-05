@@ -9,7 +9,7 @@ powered by:
 ## Install
 
 ```
-yarn add rize-router
+yarn add @yusuke-suzuki/rize-router
 ```
 
 ## Quick Start
