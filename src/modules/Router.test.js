@@ -120,4 +120,26 @@ describe('<Router>', () => {
       });
     });
   });
+
+  describe('modal routing', () => {
+    it('location changes but page does not switch', () => {
+      ReactDOM.render(
+        <RouterContext.Provider value={history}>
+          <Router routes={routes} fallback={fallback} authenticated={true} />
+        </RouterContext.Provider>,
+        div
+      );
+
+      act(() => {
+        history.push('/books');
+
+        history.push({
+          pathname: '/books/1',
+          state: { modal: true }
+        });
+      });
+
+      expect(div.innerHTML).toContain('Books');
+    });
+  });
 });
