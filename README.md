@@ -212,6 +212,36 @@ const Books = () => {
 };
 ```
 
+#### Listening
+
+You can listen for changes to the current location using `history.listen`:
+
+```jsx
+import React, { useMemo, useEffect } from 'react';
+import routes from './routes';
+import { useHistory } from '@yusuke-suzuki/rize-router';
+
+const App = () => {
+  const history = useHistory();
+
+  const unlisten = useMemo(() => {
+    return history.listen(location => {
+      console.log(location);
+    });
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
+
+  return <Router routes={routes} />;
+};
+
+export default App;
+```
+
 ### props.params
 
 Each React component defined in `routes` can receive parameters from path via `props`.
