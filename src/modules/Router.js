@@ -37,14 +37,25 @@ const Router = props => {
   }, [currentLocation, routes]);
 
   useEffect(() => {
-    if (currentLocation.state && currentLocation.state.modal) {
+    if (previousRoute && currentLocation.state && currentLocation.state.modal) {
       return;
+    }
+
+    if (
+      !previousRoute &&
+      currentLocation.state &&
+      currentLocation.state.modal
+    ) {
+      history.replace({
+        pathname: currentLocation.pathname,
+        state: undefined
+      });
     }
 
     if (matchedRoute) {
       setPreviousRoute(matchedRoute);
     }
-  }, [matchedRoute, currentLocation]);
+  }, [matchedRoute, currentLocation, previousRoute]);
 
   if (!matchedRoute) {
     if (!fallback.component) {
