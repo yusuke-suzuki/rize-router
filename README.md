@@ -113,7 +113,7 @@ export default routes;
 
 ## Usage
 
-### RouterContext
+### `RouterContext`
 
 Before you can use the router, you must provide the [history](https://github.com/ReactTraining/history) object via `RouterContext.Provider`:
 
@@ -131,7 +131,7 @@ ReactDOM.render(
 );
 ```
 
-### Router
+### `Router`
 
 #### routes: array
 
@@ -161,7 +161,35 @@ An object that have following properties:
 The current authentication state in your application.
 Required if using `authFallback`.
 
-### Link
+### `props.params`
+
+Each React component defined in `routes` can receive parameters from path via `props`.
+
+```jsx
+import React from 'react';
+
+const BookInfo = props => {
+  console.log(props.params); //=> { id: '100' } }
+
+  return <div>Book Info</div>;
+};
+```
+
+### `props.location`
+
+Each React component defined in `routes` can receive `location` object via `props`.
+
+```jsx
+import React from 'react';
+
+const Books = props => {
+  console.log(props.location); //=> { hash: "", key: "t61lkd", pathname: "/books", search: "", state: undefined }
+
+  return <div>Books</div>;
+};
+```
+
+### `Link`
 
 Provides declarative, accessible navigation around your application.
 
@@ -190,7 +218,7 @@ const Books = () => {
 };
 ```
 
-### useHistory
+### `useHistory`
 
 Simply returns the [history](https://github.com/ReactTraining/history) object.
 
@@ -212,30 +240,116 @@ const Books = () => {
 };
 ```
 
-### props.params
+#### Listening
 
-Each React component defined in `routes` can receive parameters from path via `props`.
+You can listen for changes to the current location using `history.listen`:
 
 ```jsx
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
+import routes from './routes';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
-const BookInfo = props => {
-  console.log(props.params); //=> { id: '100' } }
+const App = () => {
+  const history = useHistory();
 
-  return <div>Book Info</div>;
+  const unlisten = useMemo(() => {
+    return history.listen(location => {
+      console.log(location);
+    });
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
+
+  return <Router routes={routes} />;
 };
+
+export default App;
 ```
 
-### props.location
+#### Modal Route
 
-Each React component defined in `routes` can receive `location` object via `props`.
+You can create a modal route using `location.state.modal`.
+
+If you call `history.push` with `state: { modal: true }`, `Router` will render the previous route.
+
+This means that you can open your dialogs without re-rendering the page, also switch to the location specified in `pathname`.
+
+If you visit the site directly and there is no previous route, `Router` will render the route that matches the current path, regardless of whether `state.modal` is specified.
+
+1. Call `history.push` or using `Link` with `state.modal`:
 
 ```jsx
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
-const Books = props => {
-  console.log(props.location); //=> { hash: "", key: "t61lkd", pathname: "/books", search: "", state: undefined }
+const Books = () => {
+  const history = useHistory();
 
-  return <div>Books</div>;
+  const handleBookClick = useCallback(
+    bookId => {
+      history.push({
+        pathname: `/books/${bookId}`,
+        state: {
+          modal: true,
+          book: myBook
+        }
+      });
+    },
+    [history]
+  );
+
+  return <Button onClick={() => handleBookClick(100)}>MyBook 100</Button>;
+};
+
+export default Books;
+```
+
+2. Open / Close your dialog on location changed:
+
+```jsx
+import React, { useMemo, useEffect, useCallback } from 'react';
+import { useHistory } from '@yusuke-suzuki/rize-router';
+import { match } from 'path-to-regexp';
+
+import Dialog from '@material-ui/core/Dialog';
+
+const BookInfoDialog = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [currentBook, setCurrentBook] = useState(undefined);
+
+  const history = useHistory();
+
+  const unlisten = useMemo(() => {
+    return history.listen(location => {
+      const matched = match('/books/:bookId')(location.pathname);
+
+      if (matched && location.state && location.state.modal) {
+        setCurrentBook(location.state.book);
+        setDialogOpen(true);
+      } else {
+        setDialogOpen(false);
+      }
+    });
+  }, [history]);
+
+  const handleRequestDialogClose = useCallback(() => {
+    history.goBack();
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
+
+  return (
+    <Dialog open={dialogOpen} onClose={handleRequestDialogClose}>
+      This is book info dialog.
+    </Dialog>
+  );
 };
 ```
