@@ -49,7 +49,6 @@ const authFallback = {
 
 describe('<Router>', () => {
   const div = document.createElement('div');
-  const history = createBrowserHistory();
 
   afterEach(() => {
     ReactDOM.unmountComponentAtNode(div);
@@ -57,6 +56,8 @@ describe('<Router>', () => {
 
   describe('fallback', () => {
     it('redirected to fallback', () => {
+      const history = createBrowserHistory();
+
       ReactDOM.render(
         <RouterContext.Provider value={history}>
           <Router routes={routes} fallback={fallback} />
@@ -76,6 +77,8 @@ describe('<Router>', () => {
   describe('authFallback', () => {
     describe('unauthorized', () => {
       it('redirected to authFallback', () => {
+        const history = createBrowserHistory();
+
         ReactDOM.render(
           <RouterContext.Provider value={history}>
             <Router
@@ -99,6 +102,8 @@ describe('<Router>', () => {
 
     describe('authorized', () => {
       it('directely pushed', () => {
+        const history = createBrowserHistory();
+
         ReactDOM.render(
           <RouterContext.Provider value={history}>
             <Router
@@ -121,8 +126,48 @@ describe('<Router>', () => {
     });
   });
 
+  describe('on location change', () => {
+    const handleLocationChange = jest.fn();
+
+    beforeEach(() => {
+      handleLocationChange.mockReset();
+    });
+
+    it('callback function called on location changed', () => {
+      const history = createBrowserHistory();
+
+      ReactDOM.render(
+        <RouterContext.Provider value={history}>
+          <Router
+            routes={routes}
+            fallback={fallback}
+            authenticated={true}
+            onLocationChange={handleLocationChange}
+          />
+        </RouterContext.Provider>,
+        div
+      );
+
+      act(() => {
+        history.push({
+          pathname: '/books/1',
+          state: { modal: true }
+        });
+      });
+
+      act(() => {
+        history.push('/books');
+      });
+
+      expect(handleLocationChange).toBeCalledTimes(3);
+      expect(div.innerHTML).toContain('Books');
+    });
+  });
+
   describe('modal routing', () => {
     it('location changes but page does not switch', () => {
+      const history = createBrowserHistory();
+
       ReactDOM.render(
         <RouterContext.Provider value={history}>
           <Router routes={routes} fallback={fallback} authenticated={true} />
@@ -132,7 +177,9 @@ describe('<Router>', () => {
 
       act(() => {
         history.push('/books');
+      });
 
+      act(() => {
         history.push({
           pathname: '/books/1',
           state: { modal: true }

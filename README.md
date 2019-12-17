@@ -161,6 +161,27 @@ An object that have following properties:
 The current authentication state in your application.
 Required if using `authFallback`.
 
+#### onLocationChange: func (optional)
+
+You can listen for changes to the current location using `onLocationChange`:
+
+```jsx
+import React, { useCallback } from 'react';
+
+import { Router } from '@yusuke-suzuki/rize-router';
+import routes from './routes';
+
+const App = () => {
+  const handleLocationChange = useCallback(location => {
+    console.log(location);
+  }, []);
+
+  return <Router routes={routes} onLocationChange={handleLocationChange} />;
+};
+
+export default App;
+```
+
 ### `props.params`
 
 Each React component defined in `routes` can receive parameters from path via `props`.
@@ -238,36 +259,6 @@ const Books = () => {
 
   return <Button onClick={() => handleBookClick(100)}>MyBook 100</Button>;
 };
-```
-
-#### Listening
-
-You can listen for changes to the current location using `history.listen`:
-
-```jsx
-import React, { useMemo, useEffect } from 'react';
-import routes from './routes';
-import { useHistory } from '@yusuke-suzuki/rize-router';
-
-const App = () => {
-  const history = useHistory();
-
-  const unlisten = useMemo(() => {
-    return history.listen(location => {
-      console.log(location);
-    });
-  }, [history]);
-
-  useEffect(() => {
-    return () => {
-      unlisten();
-    };
-  }, [unlisten]);
-
-  return <Router routes={routes} />;
-};
-
-export default App;
 ```
 
 #### Modal Route
