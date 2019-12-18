@@ -4,25 +4,19 @@ import { useHistory } from './hooks';
 import PropTypes from 'prop-types';
 
 const Router = props => {
+  const {
+    routes,
+    fallback,
+    authenticated,
+    authFallback,
+    onLocationChange
+  } = props;
+
   const history = useHistory();
 
   const [currentLocation, setCurrentLocation] = useState(history.location);
   const [previousRoute, setPreviousRoute] = useState(undefined);
   const [params, setParams] = useState({});
-
-  const unlisten = useMemo(() => {
-    return history.listen(nextLocation => {
-      setCurrentLocation(nextLocation);
-    });
-  }, [history]);
-
-  useEffect(() => {
-    return () => {
-      unlisten();
-    };
-  }, [unlisten]);
-
-  const { routes, fallback, authenticated, authFallback } = props;
 
   const matchedRoute = useMemo(() => {
     return routes.find(route => {
@@ -36,26 +30,50 @@ const Router = props => {
     });
   }, [currentLocation, routes]);
 
-  useEffect(() => {
-    if (previousRoute && currentLocation.state && currentLocation.state.modal) {
-      return;
-    }
+  const isModalLocation = useMemo(() => {
+    return (
+      previousRoute && currentLocation.state && currentLocation.state.modal
+    );
+  }, [previousRoute, currentLocation]);
 
-    if (
-      !previousRoute &&
-      currentLocation.state &&
-      currentLocation.state.modal
-    ) {
+  const willReplaceModalLocation = useMemo(() => {
+    return (
+      !previousRoute && currentLocation.state && currentLocation.state.modal
+    );
+  }, [previousRoute, currentLocation]);
+
+  const unlisten = useMemo(() => {
+    return history.listen(nextLocation => {
+      setCurrentLocation(nextLocation);
+    });
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
+
+  useEffect(() => {
+    if (willReplaceModalLocation) {
       history.replace({
         pathname: currentLocation.pathname,
         state: undefined
       });
+      return;
     }
 
+    onLocationChange(currentLocation);
+  }, [willReplaceModalLocation, currentLocation]);
+
+  useEffect(() => {
+    if (isModalLocation) {
+      return;
+    }
     if (matchedRoute) {
       setPreviousRoute(matchedRoute);
     }
-  }, [matchedRoute, currentLocation, previousRoute]);
+  }, [matchedRoute, isModalLocation]);
 
   if (!matchedRoute) {
     if (!fallback.component) {
@@ -77,24 +95,24 @@ const Router = props => {
     return <authFallback.component location={currentLocation} />;
   }
 
-  if (previousRoute && currentLocation.state && currentLocation.state.modal) {
-    return (
-      <previousRoute.component params={params} location={currentLocation} />
-    );
-  }
-
-  return <matchedRoute.component params={params} location={currentLocation} />;
+  return isModalLocation ? (
+    <previousRoute.component params={params} location={currentLocation} />
+  ) : (
+    <matchedRoute.component params={params} location={currentLocation} />
+  );
 };
 
 Router.defaultProps = {
   routes: [],
   fallback: {},
   authFallback: {},
-  authenticated: false
+  authenticated: false,
+  onLocationChange: () => {}
 };
 
 Router.propTypes = {
-  routes: PropTypes.array.isRequired
+  routes: PropTypes.array.isRequired,
+  onLocationChange: PropTypes.func
 };
 
 export default React.memo(Router);
