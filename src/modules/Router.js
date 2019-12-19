@@ -44,6 +44,7 @@ const Router = props => {
 
   const unlisten = useMemo(() => {
     return history.listen(nextLocation => {
+      onLocationChange(nextLocation);
       setCurrentLocation(nextLocation);
     });
   }, [history]);
@@ -60,10 +61,7 @@ const Router = props => {
         pathname: currentLocation.pathname,
         state: undefined
       });
-      return;
     }
-
-    onLocationChange(currentLocation);
   }, [willReplaceModalLocation, currentLocation]);
 
   useEffect(() => {
