@@ -80,7 +80,7 @@ const Router = props => {
     if (fallback.path) {
       history.push(fallback.path);
     }
-    return <fallback.component location={currentLocation} />;
+    return <fallback.component />;
   }
 
   if (!authenticated && matchedRoute.requireAuth) {
@@ -90,13 +90,13 @@ const Router = props => {
     if (authFallback.path) {
       history.push(authFallback.path);
     }
-    return <authFallback.component location={currentLocation} />;
+    return <authFallback.component />;
   }
 
   return isModalLocation ? (
-    <previousRoute.component params={params} location={currentLocation} />
+    <previousRoute.component params={params} />
   ) : (
-    <matchedRoute.component params={params} location={currentLocation} />
+    <matchedRoute.component params={params} />
   );
 };
 
