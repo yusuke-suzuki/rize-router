@@ -196,20 +196,6 @@ const BookInfo = props => {
 };
 ```
 
-### `props.location`
-
-Each React component defined in `routes` can receive `location` object via `props`.
-
-```jsx
-import React from 'react';
-
-const Books = props => {
-  console.log(props.location); //=> { hash: "", key: "t61lkd", pathname: "/books", search: "", state: undefined }
-
-  return <div>Books</div>;
-};
-```
-
 ### `Link`
 
 Provides declarative, accessible navigation around your application.
