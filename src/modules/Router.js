@@ -43,6 +43,8 @@ const Router = props => {
   }, [previousRoute, currentLocation]);
 
   const unlisten = useMemo(() => {
+    onLocationChange(history.location);
+
     return history.listen(nextLocation => {
       onLocationChange(nextLocation);
       setCurrentLocation(nextLocation);

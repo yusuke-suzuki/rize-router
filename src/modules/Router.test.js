@@ -159,7 +159,7 @@ describe('<Router>', () => {
         history.push('/books');
       });
 
-      expect(handleLocationChange).toBeCalledTimes(2);
+      expect(handleLocationChange).toBeCalledTimes(3);
       expect(div.innerHTML).toContain('Books');
     });
   });
